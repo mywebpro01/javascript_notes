@@ -1,0 +1,317 @@
+{
+  "notes": [
+    {
+      "question": "What is the difference between '==' and '=== '?",
+      "answer": "== checks for value equality with type coercion. === checks for both value and type equality (strict equality).",
+      "example": "5 == '5' // true | 5 === '5' // false",
+      "id": "q_001"
+    },
+    {
+      "question": "What is 'this' keyword in JavaScript?",
+      "answer": "The 'this' keyword refers to the object that the function is a property of, or the object that the function is currently being executed in.",
+      "example": "const obj = { name: 'JS', show() { console.log(this.name); } };",
+      "id": "q_002"
+    },
+    {
+      "question": "What is the use of NaN?",
+      "answer": "NaN stands for 'Not-a-Number'. It is a property representing a value which is not a valid number, usually resulting from failed type conversions.",
+      "example": "parseInt('Hello'); // Results in NaN",
+      "id": "q_003"
+    },
+    {
+      "question": "What is the difference between null and undefined?",
+      "answer": "undefined means a variable has been declared but not assigned a value. null is an assignment value representing 'no value' or 'empty'.",
+      "example": "let a; // undefined | let b = null; // null",
+      "id": "q_005"
+    },
+    {
+      "question": "Explain Template Literals.",
+      "answer": "Template literals allow embedded expressions and multi-line strings using backticks (`) and ${} syntax.",
+      "example": "const msg = `Hello ${name}`;",
+      "id": "q_006"
+    },
+    {
+      "question": "What is Object Destructuring?",
+      "answer": "A syntax that allows you to unpack properties from objects into distinct variables.",
+      "example": "const {name, age} = user;",
+      "id": "q_007"
+    },
+    {
+      "question": "What is the Spread Operator?",
+      "answer": "The spread operator (...) allows an iterable to be expanded in places where multiple arguments or elements are expected.",
+      "example": "const newArr = [...oldArr, 4, 5];",
+      "id": "q_008"
+    },
+    {
+      "question": "What is the Rest Parameter?",
+      "answer": "The rest parameter syntax allows a function to accept an indefinite number of arguments as an array.",
+      "example": "function sum(...args) { return args.length; }",
+      "id": "q_009"
+    },
+    {
+      "question": "What is a Pure Function?",
+      "answer": "A function that always returns the same output for the same input and has no side effects (doesn't change outside variables).",
+      "example": "const add = (a, b) => a + b;",
+      "id": "q_010"
+    },
+    {
+      "question": "What is Higher-Order Function?",
+      "answer": "A function that either takes another function as an argument or returns a function. Map, Filter, and Reduce are all HOFs.",
+      "example": "function multiplier(factor) {\r\n    return function(num) {\r\n        return num * factor;\r\n    };\r\n}\r\n\r\nconst double = multiplier(2);\r\nconsole.log(double(5)); // 10",
+      "id": "q_011"
+    },
+    {
+      "question": "What is the use of SetTimeout?",
+      "answer": "It calls a function or evaluates an expression after a specified number of milliseconds.",
+      "example": "setTimeout(() => console.log('Hi'), 1000);",
+      "id": "q_012"
+    },
+    {
+      "question": "What is SetInterval?",
+      "answer": "It calls a function or evaluates an expression at specified intervals (in milliseconds) repeatedly.",
+      "example": "setInterval(() => console.log('Tick'), 1000);",
+      "id": "q_013"
+    },
+    {
+      "question": "What is Call Stack?",
+      "answer": "A mechanism for the JS engine to keep track of its place in a script that calls multiple functions.",
+      "example": "Stack: LIFO (Last In, First Out) order.",
+      "id": "q_014"
+    },
+    {
+      "question": "Difference between Map and Set?",
+      "answer": "Map is a collection of keyed data items (like an object but keys can be anything). Set is a collection of unique values.",
+      "example": "const mySet = new Set([1, 2, 2]); // contains only 1, 2",
+      "id": "q_015"
+    },
+    {
+      "question": "What is the Fetch API?",
+      "answer": "A modern interface that allows you to make HTTP requests to servers from web browsers.",
+      "example": "fetch(url).then(response => response.json());",
+      "id": "q_016"
+    },
+    {
+      "question": "What is Event Bubbling?",
+      "answer": "When an event happens on an element, it first runs the handlers on it, then on its parent, then all the way up on other ancestors.",
+      "example": "Clicking a button also triggers the click event of its div wrapper.",
+      "id": "q_017"
+    },
+    {
+      "question": "What is Event Capturing?",
+      "answer": "The event goes from the document root down to the element. It is the opposite of bubbling.",
+      "example": "elem.addEventListener('click', handler, {capture: true});",
+      "id": "q_018"
+    },
+    {
+      "question": "What is event.preventDefault()?",
+      "answer": "It stops the default behavior of an element (e.g., stops a form from submitting or a link from opening).",
+      "example": "form.onsubmit = (e) => e.preventDefault();",
+      "id": "q_019"
+    },
+    {
+      "question": "What is event.stopPropagation()?",
+      "answer": "It prevents further propagation of the current event in the bubbling or capturing phases.",
+      "example": "button.onclick = (e) => e.stopPropagation();",
+      "id": "q_020"
+    },
+    {
+      "question": "What is the use of 'use strict'?",
+      "answer": "It enforces a stricter parsing and error handling in your code, helping you catch common coding bloopers.",
+      "example": "'use strict'; x = 5; // Throws error because x is not declared",
+      "id": "q_021"
+    },
+    {
+      "question": "What are Classes in ES6?",
+      "answer": "Syntactic sugar over JS's existing prototype-based inheritance to create objects and handle inheritance.",
+      "example": "class User { constructor(name) { this.name = name; } }",
+      "id": "q_022"
+    },
+    {
+      "question": "What is the Module System (import/export)?",
+      "answer": "Allows you to split your code into multiple files and share variables/functions between them.",
+      "example": "export const data = 10; | import {data} from './file.js';",
+      "id": "q_023"
+    },
+    {
+      "question": "Explain 'typeof' operator.",
+      "answer": "Returns a string indicating the type of the unevaluated operand.",
+      "example": "typeof 'hello'; // 'string' | typeof 123; // 'number'",
+      "id": "q_024"
+    },
+    {
+      "question": "What is 'instanceof' operator?",
+      "answer": "Tests whether the prototype property of a constructor appears anywhere in the prototype chain of an object.",
+      "example": "arr instanceof Array; // true",
+      "id": "q_025"
+    },
+    {
+      "question": "what is Map?",
+      "answer": "The map() method creates a new array by applying a function to every element in the original array. It is used for transformation.   It does not change the original array, and the new array will always have the same length.",
+      "example": "const numbers = [1, 2, 3, 4];  const doubled = numbers.map(num => num * 2);  console.log(doubled); // [2, 4, 6, 8]",
+      "id": "b7GQwTY8F7c"
+    },
+    {
+      "question": "What is Filter?",
+      "answer": "Filter is a new array containing only the elemets  that pass specific  condition. if condition is true its kept. if fails its skipped ",
+      "example": "const numbers = [1, 2, 3, 4, 5, 6];  const evens = numbers.filter(num => num % 2 === 0);  console.log(evens); // [2, 4, 6]",
+      "id": "F4gn_b26Bpg"
+    },
+    {
+      "question": "What is Reducer?",
+      "answer": ".reduce() executes a reducer function on each element of the array, resulting in a single output value (like a number, an object, or a string). It uses an \"accumulator\" to keep track of the result as it moves through the array.",
+      "example": "const numbers = [1, 2, 3, 4];  // acc = accumulator (the running total) // curr = current element in the loop const sum = numbers.reduce((acc, curr) => {     return acc + curr; }, 0); // 0 is the starting value for the accumulator  console.log(sum); // 10",
+      "id": "VIYt_Ty1Ao8"
+    },
+    {
+      "question": "what is closure?",
+      "answer": "A closure is a function that \"remembers\" its lexical scope even when the function is executed outside that scope. It allows a function to have \"private\" variables.",
+      "example": "function createCounter() {     let count = 0; // Private variable     return function() {         count++;         return count;     }; }  const myCounter = createCounter(); console.log(myCounter()); // 1 console.log(myCounter()); // 2 // 'count' is inaccessible here; only the returned function can see it.",
+      "id": "rnCs2S3rns0"
+    },
+    {
+      "question": "what is Curring?",
+      "answer": "Curring is a Technique of transforming a function that take multiple arguments into sequence of functions that each take single argument.",
+      "example": "const multiply = (a) => (b) => a * b;  const double = multiply(2);  const triple = multiply(3);  console.log(double(5)); // 10 console.log(triple(5)); // 15",
+      "id": "rHfz2CVI6hM"
+    },
+    {
+      "question": "what is Debouncing?",
+      "answer": "Debouncing ensures that a function is not called too many times in a short period. It waits for a \"pause\" in activity before running.",
+      "example": "function debounce(func, delay) {     let timeout;     return (...args) => {         clearTimeout(timeout);         timeout = setTimeout(() => func(...args), delay);     }; }  const processSearch = debounce(() => console.log(\"Searching API...\"), 500); // If user types 10 letters fast, \"Searching API\" only logs once!",
+      "id": "xTcDtaSOeGs"
+    },
+    {
+      "question": "what is call?",
+      "answer": "call() runs a function immediately and tells it exactly which object should be this. You pass the arguments one by one (comma-separated).",
+      "example": "const person = {   greet: function(city, country) {     console.log(`Hello, I am ${this.name} from ${city}, ${country}.`);   } };  const user1 = { name: \"Arjun\" };  // Borrowing the greet function for user1 person.greet.call(user1, \"Mumbai\", \"India\");  // Output: Hello, I am Arjun from Mumbai, India.",
+      "id": "Qheqssz-Ez4"
+    },
+    {
+      "question": "What is Apply (Often confused with append)?",
+      "answer": "const person = {   greet: function(city, country) {     console.log(`Hello, I am ${this.name} from ${city}, ${country}.`);   } };  const user1 = { name: \"Arjun\" };  // Borrowing the greet function for user1 person.greet.call(user1, \"Mumbai\", \"India\");  // Output: Hello, I am Arjun from Mumbai, India.",
+      "example": "// Using the same person/user1 from above person.greet.apply(user1, [\"Mumbai\", \"India\"]);  // Output: Same result, but arguments are in an [array].",
+      "id": "PYX2xL-YfgU"
+    },
+    {
+      "question": "What is Bind?",
+      "answer": "bind() does not run the function immediately. Instead, it creates a \"copy\" of the function with the this value locked in, so you can run it later.",
+      "example": "const user2 = { name: \"Sara\" };  // Create a permanent greeting for Sara const greetSara = person.greet.bind(user2, \"Paris\", \"France\");  // Run it whenever you want! greetSara();  // Output: Hello, I am Sara from Paris, France.",
+      "id": "J6oG_3GsmCg"
+    },
+    {
+      "question": "What is Append (DOM Method)?",
+      "answer": "append() is not a function-binding method; it is a DOM method. It is used to insert a piece of content (like text or an HTML element) at the very end of a parent element.",
+      "example": "const list = document.getElementById(\"myList\"); const newItem = document.createElement(\"li\"); newItem.innerText = \"Learn JavaScript\";  list.append(newItem); // Adds the <li> to the end of the <ul>",
+      "id": "9A7arHWEM8g"
+    },
+    {
+      "question": "What is Promises?",
+      "answer": "Promises allow for Asynchronous behavior. A Promise is an object representing the eventual completion (or failure) of an API call. It says: \"I don't have the data yet, but I promise to let you know as soon as I do.\"           The 3 States of an API Promise When you fetch data from an API, the Promise goes through these stages:  Pending: The request is sent, but the server hasn't replied yet (The \"Loading\" state).  Fulfilled (.then): The server responded successfully with the data (The \"Success\" state).  Rejected (.catch): Something went wrong—maybe the server is down or the URL is wrong (The \"Error\" state).",
+      "example": "async function getData() {   try {     // 1. Start the request (Status: Pending)     const response = await fetch('https://api.example.com/data');      // Check if the API actually found what you wanted     if (!response.ok) throw new Error(\"Network response was not ok\");      // 2. Wait for the data to be parsed (Status: Fulfilled)     const data = await response.json();     console.log(data);    } catch (error) {     // 3. Handle any connection or server issues (Status: Rejected)     console.log(\"Error fetching API:\", error);   } }",
+      "id": "BOHULtwoQHk"
+    },
+    {
+      "question": "What is Global Execution Context (GEC)?",
+      "answer": "This is the default environment where your code starts executing. It creates two things: the window object (in browsers) and the this keyword. It stays at the bottom of the Call Stack until the program ends. ",
+      "example": "Example: Any code not inside a function is in the GEC.",
+      "id": "oOHzzsb-R6g"
+    },
+    {
+      "question": "What is call Stack?",
+      "answer": "A \"Last In, First Out\" (LIFO) data structure that tracks which function is currently running. When you call a function, it is pushed onto the stack; when it finishes, it is popped off.",
+      "example": "function second() { console.log(\"Second\"); } function first() { second(); } first();  // Stack: GEC -> first() -> second() -> console.log()",
+      "id": "yD2hNpRkTbQ"
+    },
+    {
+      "question": "Task Queues (The Waiting Rooms)?",
+      "answer": "When an asynchronous operation (like a timer or a fetch) finishes, it doesn't jump straight to the stack. It waits in a queue.",
+      "example": "A. Microtask Queue (High Priority) Contains tasks from Promises (.then/catch/finally) and MutationObserver.  B. Macrotask Queue (Lower Priority) Contains tasks from setTimeout, setInterval, setImmediate, and DOM events.",
+      "id": "0zB-VLcTN64"
+    },
+    {
+      "question": "What is The Event Loop?",
+      "answer": "A constant process that monitors the Call Stack and the Queues. The Rule: If the Call Stack is empty, the Event Loop first empties the entire Microtask Queue, then takes one task from the Macrotask Queue.",
+      "example": "console.log(\"1. Script Start\"); // Global Sync code  setTimeout(() => {     console.log(\"2. Timeout (Macrotask)\");  }, 0);  Promise.resolve().then(() => {     console.log(\"3. Promise 1 (Microtask)\"); }).then(() => {     console.log(\"4. Promise 2 (Microtask)\"); });  console.log(\"5. Script End\"); // Global Sync code",
+      "id": "sDDWBI82tMY"
+    },
+    {
+      "question": "What is Hoisting?",
+      "answer": "Hoisting is the JavaScript engine's behavior of moving declarations to the top of their scope before code execution. However, how they are hoisted depends on the keyword used.             var: Hoisted and initialized as undefined.  let & const: Hoisted but not initialized. They stay in a \"Temporal Dead Zone\" (TDZ) until the line of code is reached.  Functions: Fully hoisted (you can call them before they are defined).",
+      "example": "console.log(a); // undefined (due to hoisting) var a = 10;  // console.log(b); // ReferenceError! (TDZ) let b = 20;  sayHi(); // \"Hi!\" (Functions are fully hoisted) function sayHi() { console.log(\"Hi!\"); }",
+      "id": "tqu9g4nicVY"
+    },
+    {
+      "question": "Shallow Copy vs. Deep Copy?",
+      "answer": "When you copy an object, a Shallow Copy only copies the top-level values. If the object has nested objects, they still point to the same memory address. A Deep Copy creates a completely independent clone of everything.",
+      "example": "When you copy an object, a Shallow Copy only copies the top-level values. If the object has nested objects, they still point to the same memory address. A Deep Copy creates a completely independent clone of everything.",
+      "id": "AGKgYdrwKc8"
+    },
+    {
+      "question": "What is Prototypes & Prototype Chain",
+      "answer": "Every object in JS has a \"parent\" object called a Prototype. When you try to access a property that doesn't exist on an object, JS looks up the \"Chain\" to find it.",
+      "example": "const animal = { eats: true }; const dog = { barks: true };  Object.setPrototypeOf(dog, animal); // dog now inherits from animal  console.log(dog.barks); // true console.log(dog.eats);  // true (found in the Prototype Chain)",
+      "id": "3jCqA9LLRbM"
+    },
+    {
+      "question": "What is Pure Functions & Side Effects?",
+      "answer": "A Pure Function always returns the same output for the same input and has no side effects (it doesn't change variables outside itself or talk to the outside world/APIs).",
+      "example": "// PURE: Predictable const add = (a, b) => a + b;   // IMPURE: Side effect (modifies external variable) let total = 0; const addToTotal = (a) => {     total += a;      return total; };",
+      "id": "_TSpZPrLWkc"
+    },
+    {
+      "question": "What is Pure Functions & Side Effects?",
+      "answer": "A Pure Function always returns the same output for the same input and has no side effects (it doesn't change variables outside itself or talk to the outside world/APIs).",
+      "example": "// PURE: Predictable const add = (a, b) => a + b;   // IMPURE: Side effect (modifies external variable) let total = 0; const addToTotal = (a) => {     total += a;      return total; };",
+      "id": "11UvdTZ0wPY"
+    },
+    {
+      "question": "What are Let and Const (Block Scoping)?",
+      "answer": "Before ES6, we only had var (function-scoped). let and const are block-scoped, meaning they only exist inside the curly braces {} where they are defined.  let: Can be reassigned.  const: Cannot be reassigned (but the contents of an object/array can change).",
+      "example": "if (true) {     let secret = \"I am hidden\";     const pi = 3.14; } // console.log(secret); // ReferenceError: secret is not defined",
+      "id": "sPBINo_7K64"
+    },
+    {
+      "question": "What is Arrow Functions?",
+      "answer": "A shorter syntax for writing functions. They don't have their own this context (they inherit it from the parent scope), which makes them perfect for callbacks.",
+      "example": "// Traditional function add(a, b) { return a + b; }  // Arrow Function (One-liner) const add = (a, b) => a + b;",
+      "id": "b94kLKLILX8"
+    },
+    {
+      "question": "What is Template Literals?",
+      "answer": "Allows you to create strings using backticks (`) instead of quotes. You can inject variables directly using ${} and create multi-line strings easily.",
+      "example": "const name = \"Arjun\"; const greeting = `Hello, ${name}!  Welcome to the team.`;",
+      "id": "yeirotghc2w"
+    },
+    {
+      "question": "What is Destructuring (Objects & Arrays)?",
+      "answer": "A fast way to \"unpack\" values from arrays or properties from objects into distinct variables.",
+      "example": "const user = { id: 1, username: \"dev_guy\", email: \"test@test.com\" };  // Instead of user.username, user.email... const { username, email } = user; console.log(username); // \"dev_guy\"",
+      "id": "46bvIxIqKAY"
+    },
+    {
+      "question": "What are Spread and Rest Operators (...)?",
+      "answer": "Spread: \"Spreads\" an array/object into individual elements (used for copying or merging).  Rest: Gathers multiple individual elements into a single array (used in function parameters).",
+      "example": "// Spread const arr1 = [1, 2]; const arr2 = [...arr1, 3, 4]; // [1, 2, 3, 4]  // Rest function sum(...numbers) {     return numbers.reduce((acc, curr) => acc + curr); }",
+      "id": "giJ5XRw4S9o"
+    },
+    {
+      "question": "What is ES Modules (Import/Export)?",
+      "answer": "Allows you to split your code into multiple files. You export a function or variable from one file and import it into another.",
+      "example": "// file1.js export const multiply = (a, b) => a * b;  // file2.js import { multiply } from './file1.js';",
+      "id": "TbPBuozIY-o"
+    },
+    {
+      "question": "What is Optional Chaining (?.)",
+      "answer": "Safely access deeply nested object properties without checking if every level exists. If a part of the chain is null or undefined, it returns undefined instead of crashing.",
+      "example": "const user = { profile: { name: \"Alice\" } };  // Without optional chaining: user && user.profile && user.profile.name console.log(user?.profile?.name); // \"Alice\" console.log(user?.address?.city); // undefined (No crash!)",
+      "id": "5MhxmM76DkY"
+    },
+    {
+      "question": "What is Nullish Coalescing (??)",
+      "answer": "Returns the right-hand side value only if the left-hand side is null or undefined. Unlike || (OR), it treats 0 or \"\" (empty string) as valid values.",
+      "example": "const score = 0; const finalScore = score ?? 10; // Result: 0 (Because 0 is not null/undefined) const defaultScore = score || 10; // Result: 10 (Because 0 is \"falsy\")",
+      "id": "3jZd9nqlV2A"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
