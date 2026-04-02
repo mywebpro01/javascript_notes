@@ -1,103 +1,69 @@
-// 🌐 API URL (Railway)
+// ✅ Local API URL
+const API = "http://localhost:3000/notes";
+
 const API = "https://lucid-presence-production-5019.up.railway.app/notes";
 
-// 📦 State
+
 let allNotes = [];
 let filteredNotes = [];
 let currentPage = 1;
 const limit = 100;
 
-// 🔊 Speech Control
+// 🔊 Speech control
 let currentSpeechIndex = 0;
 let isReading = false;
 
 /**
- * 🔐 Escape HTML (prevents UI break)
- */
-function escapeHTML(str = "") {
-    return str
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-}
-
-/**
- * 🚀 FETCH NOTES (with loading + better error)
+ * 1. INITIAL FETCH
  */
 async function fetchNotes() {
-    const container = document.getElementById("notesContainer");
-    container.innerHTML = "<p>⏳ Loading notes...</p>";
-
     try {
         const res = await fetch(API);
-
-        if (!res.ok) {
-            throw new Error(`Server error: ${res.status}`);
-        }
+        if (!res.ok) throw new Error("Server error");
 
         const data = await res.json();
 
         allNotes = data.reverse();
         filteredNotes = [...allNotes];
-
         renderUI();
     } catch (err) {
-        console.error("❌ API ERROR:", err);
-
-        container.innerHTML = `
-            <p style="color:red;">
-                ❌ Server not responding.<br>
-                👉 Check Railway deployment or API URL
-            </p>
-        `;
+        console.error("Database connection failed:", err);
     }
 }
 
 /**
- * 🎨 RENDER UI
+ * 2. RENDER UI
  */
 function renderUI() {
     const container = document.getElementById("notesContainer");
     container.innerHTML = "";
 
     const start = (currentPage - 1) * limit;
-    const pageData = filteredNotes.slice(start, start + limit);
+    const end = start + limit;
+    const pageData = filteredNotes.slice(start, end);
 
-    if (!pageData.length && currentPage > 1) {
+    if (pageData.length === 0 && currentPage > 1) {
         currentPage--;
-        return renderUI();
+        renderUI();
+        return;
     }
 
     pageData.forEach((note, index) => {
-        const serial = start + index + 1;
+        const serialNumber = start + index + 1;
 
         container.innerHTML += `
-        <div class="card">
-            <h3>Q${serial}: ${escapeHTML(note.question)}</h3>
-            <p><strong>A:</strong> ${escapeHTML(note.answer)}</p>
+            <div class="card">
+                <h3>Q${serialNumber}: ${note.question}</h3>
+                <p><strong>A:</strong> ${note.answer}</p>
+                ${note.example ? `<div class="code-snippet"><code><textarea>${note.example}</textarea></code></div>` : ''}
 
-            ${note.example ? `
-            <div class="code-editor">
-                <textarea id="code-${note.id}" class="editor">
-${escapeHTML(note.example)}
-                </textarea>
-
-                <div class="editor-actions">
-                    <button onclick="runCode('${note.id}')">▶ Run</button>
-                    <button onclick="resetCode('${note.id}', \`${note.example}\`)">🔄 Reset</button>
+                <div class="card-actions">
+                    <button onclick="startReading(${start + index})">🔊 Read</button>
+                    <button onclick="stopReading()">⏹ Stop</button>
+                    <button onclick="updateNote('${note.id}')">✏️ Edit</button>
+                    <button onclick="deleteNote('${note.id}')">🗑️ Delete</button>
                 </div>
-
-                <iframe id="output-${note.id}" class="output"></iframe>
             </div>
-            ` : ""}
-
-            <div class="card-actions">
-                <button onclick="startReading(${start + index})">🔊 Read</button>
-                <button onclick="stopReading()">⏹ Stop</button>
-                <button onclick="updateNote('${note.id}')">✏️ Edit</button>
-                <button onclick="deleteNote('${note.id}')">🗑️ Delete</button>
-            </div>
-        </div>
         `;
     });
 
@@ -105,33 +71,14 @@ ${escapeHTML(note.example)}
 }
 
 /**
- * ▶ RUN CODE IN IFRAME
- */
-function runCode(id) {
-    const code = document.getElementById(`code-${id}`).value;
-    const iframe = document.getElementById(`output-${id}`);
-
-    const doc = iframe.contentDocument || iframe.contentWindow.document;
-
-    doc.open();
-    doc.write(code);
-    doc.close();
-}
-
-/**
- * 🔄 RESET CODE
- */
-function resetCode(id, original) {
-    document.getElementById(`code-${id}`).value = original;
-}
-
-/**
- * 🔊 TEXT TO SPEECH
+ * 🔊 CONTINUOUS SPEECH (NEW)
  */
 function startReading(index) {
-    speechSynthesis.cancel();
+    speechSynthesis.cancel(); // stop any previous speech
+
     currentSpeechIndex = index;
     isReading = true;
+
     readNext();
 }
 
@@ -142,14 +89,13 @@ function readNext() {
     }
 
     const note = filteredNotes[currentSpeechIndex];
-
     const text = `Question ${currentSpeechIndex + 1}. ${note.question}. Answer. ${note.answer}`;
 
     const utterance = new SpeechSynthesisUtterance(text);
 
     utterance.onend = () => {
         currentSpeechIndex++;
-        readNext();
+        readNext(); // 🔁 next note automatically
     };
 
     speechSynthesis.speak(utterance);
@@ -161,21 +107,27 @@ function stopReading() {
 }
 
 /**
- * 📄 PAGINATION
+ * 3. PAGINATION
  */
 function renderPagination() {
     const pg = document.getElementById("pagination");
-    const total = Math.ceil(filteredNotes.length / limit);
-
+    const pageCount = Math.ceil(filteredNotes.length / limit);
     pg.innerHTML = "";
-    if (total <= 1) return;
 
-    const createBtn = (txt, disabled, onClick) => {
+    if (pageCount <= 1) return;
+
+    const createBtn = (content, isActive, isDisabled, onClick) => {
         const btn = document.createElement("button");
-        btn.innerText = txt;
-        btn.disabled = disabled;
 
-        if (!disabled) {
+        btn.className = isActive
+            ? "active-btn"
+            : isDisabled
+            ? "disabled-btn"
+            : "normal-btn";
+
+        btn.innerHTML = content;
+
+        if (!isDisabled && !isActive && onClick) {
             btn.onclick = () => {
                 onClick();
                 window.scrollTo({ top: 0, behavior: "smooth" });
@@ -185,26 +137,26 @@ function renderPagination() {
         return btn;
     };
 
-    pg.appendChild(createBtn("⬅", currentPage === 1, () => {
+    pg.appendChild(createBtn("⬅", false, currentPage === 1, () => {
         currentPage--;
         renderUI();
     }));
 
-    for (let i = 1; i <= total; i++) {
-        pg.appendChild(createBtn(i, false, () => {
+    for (let i = 1; i <= pageCount; i++) {
+        pg.appendChild(createBtn(i, i === currentPage, false, () => {
             currentPage = i;
             renderUI();
         }));
     }
 
-    pg.appendChild(createBtn("➡", currentPage === total, () => {
+    pg.appendChild(createBtn("➡", false, currentPage === pageCount, () => {
         currentPage++;
         renderUI();
     }));
 }
 
 /**
- * 🔍 SEARCH
+ * 4. SEARCH
  */
 function searchNotes() {
     const term = document.getElementById("searchInput").value.toLowerCase();
@@ -219,59 +171,65 @@ function searchNotes() {
 }
 
 /**
- * ➕ ADD NOTE
+ * 5. CRUD OPERATIONS
  */
 async function addNote() {
-    const q = document.getElementById("question");
-    const a = document.getElementById("answer");
-    const e = document.getElementById("example");
+    const qEl = document.getElementById("question");
+    const aEl = document.getElementById("answer");
+    const eEl = document.getElementById("example");
 
-    if (!q.value || !a.value) return alert("Fill all fields");
+    if (!qEl.value || !aEl.value) {
+        alert("Fill all fields");
+        return;
+    }
+
+    const newNote = {
+        question: qEl.value,
+        answer: aEl.value,
+        example: eEl.value
+    };
 
     await fetch(API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            question: q.value,
-            answer: a.value,
-            example: e.value
-        })
+        body: JSON.stringify(newNote)
     });
 
-    q.value = a.value = e.value = "";
+    qEl.value = "";
+    aEl.value = "";
+    eEl.value = "";
+
     fetchNotes();
 }
 
-/**
- * ❌ DELETE
- */
 async function deleteNote(id) {
-    if (!confirm("Delete this note?")) return;
-
-    await fetch(`${API}/${id}`, { method: "DELETE" });
-    fetchNotes();
+    if (confirm("Delete this note?")) {
+        await fetch(`${API}/${id}`, { method: "DELETE" });
+        fetchNotes();
+    }
 }
 
-/**
- * ✏️ UPDATE
- */
 async function updateNote(id) {
     const note = allNotes.find(n => n.id == id);
 
-    const q = prompt("Edit Question", note.question);
-    const a = prompt("Edit Answer", note.answer);
-    const e = prompt("Edit Example", note.example);
+    const newQ = prompt("Edit Question", note.question);
+    const newA = prompt("Edit Answer", note.answer);
+    const newE = prompt("Edit Example", note.example);
 
-    if (!q || !a) return;
+    if (newQ && newA) {
+        await fetch(`${API}/${id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                question: newQ,
+                answer: newA,
+                example: newE
+            })
+        });
 
-    await fetch(`${API}/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: q, answer: a, example: e })
-    });
-
-    fetchNotes();
+        fetchNotes();
+    }
 }
 
-// 🚀 INIT
+// 🚀 Start App
 fetchNotes();
