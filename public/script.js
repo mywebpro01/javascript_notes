@@ -26,7 +26,6 @@ async function fetchNotes() {
         renderUI();
     } catch (err) {
         console.error("Database connection failed:", err);
-        alert("Server not responding. Make sure json-server is running on localhost:3000");
     }
 }
 
