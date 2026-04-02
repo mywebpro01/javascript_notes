@@ -1,5 +1,3 @@
-// ✅ Local API URL
-const API = "http://localhost:3000/notes";
 
 const API = "https://lucid-presence-production-5019.up.railway.app/notes";
 
