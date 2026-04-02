@@ -1,5 +1,5 @@
 // ✅ Railway API URL (REPLACE with your real URL)
-const API_BASE = "https://your-app-name.up.railway.app";
+const API_BASE = "https://lucid-presence-production-5019.up.railway.app";
 const API = `${API_BASE}/notes`;
 
 let allNotes = [];
