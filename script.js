@@ -1,6 +1,7 @@
 // ✅ Railway API URL (REPLACE with your real URL)
-const API_BASE = "https://lucid-presence-production-5019.up.railway.app";
-const API = `${API_BASE}/notes`;
+//const API_BASE = "https://lucid-presence-production-5019.up.railway.app";
+const API = `${API_BASE}/notes`;https://lucid-presence-production-5019.up.railway.app/notes
+
 
 let allNotes = [];
 let filteredNotes = [];
