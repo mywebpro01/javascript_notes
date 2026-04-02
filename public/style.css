@@ -1,1 +1,89 @@
 
+/* Container & Layout */
+body { font-family: 'Inter', sans-serif; background: #f4f7f6; padding: 20px; color: #333; }
+.container { max-width: 850px; margin: auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+
+/* Form Styles */
+.form-container { background: #fafafa; padding: 20px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 20px; }
+input, textarea { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
+textarea { height: 100px; resize: vertical; }
+
+/* Button Styles */
+.button-group { display: flex; gap: 10px; }
+.btn { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+.add { background: #00b894; color: white; }
+.audio { background: #6c5ce7; color: white; }
+.btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* Card (Row-by-Row) Styling */
+.card { border-bottom: 1px solid #edf2f7; padding: 20px 0; animation: slideUp 0.3s ease-out; }
+.card:last-child { border-bottom: none; }
+.card h3 { color: #2d3436; margin: 0 0 10px 0; font-size: 1.1rem; }
+.card p { color: #636e72; line-height: 1.6; margin-bottom: 10px; }
+.card code { display: block; background: #2d3436; color: #fab1a0; padding: 12px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 0.9rem; overflow-x: auto; }
+
+/* Actions */
+.card-actions { margin-top: 15px; display: flex; gap: 8px; }
+.action-btn { padding: 6px 14px; border-radius: 4px; border: none; font-size: 12px; cursor: pointer; }
+.read { background: #0984e3; color: white; }
+.update { background: #fdcb6e; color: #2d3436; }
+.delete { background: #d63031; color: white; }
+
+/* Pagination Styling */
+.pagination { display: flex; justify-content: center; gap: 5px; margin-top: 30px; flex-wrap: wrap; }
+.page-btn { padding: 8px 16px; border: 1px solid #dfe6e9; background: white; cursor: pointer; border-radius: 4px; }
+.page-btn.active { background: #0984e3; color: white; border-color: #0984e3; }
+
+@keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Pagination Wrapper */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 30px 0;
+    flex-wrap: wrap; /* Important for 100+ questions so buttons wrap to next line */
+}
+
+/* Individual Page Buttons */
+.pagination button {
+    padding: 10px 16px;
+    border: 1px solid #dfe6e9;
+    background-color: #ffffff;
+    color: #2d3436;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    min-width: 45px;
+}
+
+/* Hover Effect */
+.pagination button:hover:not(:disabled) {
+    background-color: #f1f2f6;
+    border-color: #b2bec3;
+    transform: translateY(-1px);
+}
+
+/* Active Page Style */
+.pagination button.active {
+    background-color: #1a73e8;
+    color: white;
+    border-color: #1a73e8;
+    box-shadow: 0 4px 6px rgba(26, 115, 232, 0.2);
+}
+
+/* Disabled State (for Prev/Next arrows) */
+.pagination button:disabled {
+    background-color: #f5f5f5;
+    color: #b2bec3;
+    cursor: not-allowed;
+    border-color: #eee;
+}
+
+/* Specific Style for Prev/Next Nav Buttons */
+.nav-btn {
+    background-color: #f8f9fa;
+    color: #1a73e8;
+}
