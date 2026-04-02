@@ -1,5 +1,5 @@
-// ✅ Railway API URL
-const API_BASE = "https://your-app-name.up.railway.app"; // change this
+// ✅ Railway API URL (REPLACE with your real URL)
+const API_BASE = "https://your-app-name.up.railway.app";
 const API = `${API_BASE}/notes`;
 
 let allNotes = [];
@@ -13,15 +13,20 @@ const limit = 100;
 async function fetchNotes() {
     try {
         const res = await fetch(API);
-        if (!res.ok) throw new Error("Server error");
+
+        if (!res.ok) {
+            throw new Error(`Server error: ${res.status}`);
+        }
+
         const data = await res.json();
 
-        allNotes = data.reverse();
+        allNotes = Array.isArray(data) ? data.reverse() : [];
         filteredNotes = [...allNotes];
+
         renderUI();
     } catch (err) {
         console.error("Database connection failed:", err);
-        alert("Server not responding. Check Railway deployment.");
+        alert("❌ Server not responding. Check Railway deployment URL.");
     }
 }
 
@@ -45,19 +50,22 @@ function renderUI() {
     pageData.forEach((note, index) => {
         const serialNumber = start + index + 1;
 
-        container.innerHTML += `
-            <div class="card">
-                <h3>Q${serialNumber}: ${note.question}</h3>
-                <p><strong>A:</strong> ${note.answer}</p>
-                ${note.example ? `<div class="code-snippet"><code>${note.example}</code></div>` : ''}
+        const card = document.createElement("div");
+        card.className = "card";
 
-                <div class="card-actions">
-                    <button onclick="speak(\`${note.question}\`)">🔊 Read</button>
-                    <button onclick="updateNote('${note.id}')">✏️ Edit</button>
-                    <button onclick="deleteNote('${note.id}')">🗑️ Delete</button>
-                </div>
+        card.innerHTML = `
+            <h3>Q${serialNumber}: ${note.question || ""}</h3>
+            <p><strong>A:</strong> ${note.answer || ""}</p>
+            ${note.example ? `<div class="code-snippet"><code>${note.example}</code></div>` : ""}
+
+            <div class="card-actions">
+                <button onclick="speak(\`${note.question}\`)">🔊 Read</button>
+                <button onclick="updateNote('${note.id}')">✏️ Edit</button>
+                <button onclick="deleteNote('${note.id}')">🗑️ Delete</button>
             </div>
         `;
+
+        container.appendChild(card);
     });
 
     renderPagination();
@@ -95,35 +103,45 @@ function renderPagination() {
     };
 
     // Prev
-    pg.appendChild(createBtn("⬅", false, currentPage === 1, () => {
-        currentPage--;
-        renderUI();
-    }));
+    pg.appendChild(
+        createBtn("⬅", false, currentPage === 1, () => {
+            currentPage--;
+            renderUI();
+        })
+    );
 
     // Numbers
     for (let i = 1; i <= pageCount; i++) {
-        pg.appendChild(createBtn(i, i === currentPage, false, () => {
-            currentPage = i;
-            renderUI();
-        }));
+        pg.appendChild(
+            createBtn(i, i === currentPage, false, () => {
+                currentPage = i;
+                renderUI();
+            })
+        );
     }
 
     // Next
-    pg.appendChild(createBtn("➡", false, currentPage === pageCount, () => {
-        currentPage++;
-        renderUI();
-    }));
+    pg.appendChild(
+        createBtn("➡", false, currentPage === pageCount, () => {
+            currentPage++;
+            renderUI();
+        })
+    );
 }
 
 /**
  * 4. SEARCH
  */
 function searchNotes() {
-    const term = document.getElementById("searchInput").value.toLowerCase();
+    const term = document
+        .getElementById("searchInput")
+        .value.toLowerCase()
+        .trim();
 
-    filteredNotes = allNotes.filter(n =>
-        n.question.toLowerCase().includes(term) ||
-        n.answer.toLowerCase().includes(term)
+    filteredNotes = allNotes.filter(
+        (n) =>
+            (n.question || "").toLowerCase().includes(term) ||
+            (n.answer || "").toLowerCase().includes(term)
     );
 
     currentPage = 1;
@@ -138,53 +156,72 @@ async function addNote() {
     const aEl = document.getElementById("answer");
     const eEl = document.getElementById("example");
 
-    if (!qEl.value || !aEl.value) return alert("Fill all fields");
+    if (!qEl.value.trim() || !aEl.value.trim()) {
+        alert("⚠️ Please fill all required fields");
+        return;
+    }
 
     const newNote = {
-        question: qEl.value,
-        answer: aEl.value,
-        example: eEl.value
+        question: qEl.value.trim(),
+        answer: aEl.value.trim(),
+        example: eEl.value.trim()
     };
 
-    await fetch(API, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newNote)
-    });
+    try {
+        await fetch(API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newNote)
+        });
 
-    qEl.value = "";
-    aEl.value = "";
-    eEl.value = "";
+        qEl.value = "";
+        aEl.value = "";
+        eEl.value = "";
 
-    fetchNotes();
+        fetchNotes();
+    } catch (err) {
+        console.error(err);
+        alert("❌ Failed to add note");
+    }
 }
 
 async function deleteNote(id) {
-    if (confirm("Delete this note?")) {
+    if (!confirm("Delete this note?")) return;
+
+    try {
         await fetch(`${API}/${id}`, { method: "DELETE" });
         fetchNotes();
+    } catch (err) {
+        console.error(err);
+        alert("❌ Failed to delete note");
     }
 }
 
 async function updateNote(id) {
-    const note = allNotes.find(n => n.id == id);
+    const note = allNotes.find((n) => n.id == id);
+    if (!note) return;
 
     const newQ = prompt("Edit Question", note.question);
     const newA = prompt("Edit Answer", note.answer);
     const newE = prompt("Edit Example", note.example);
 
-    if (newQ && newA) {
+    if (!newQ || !newA) return;
+
+    try {
         await fetch(`${API}/${id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                question: newQ,
-                answer: newA,
-                example: newE
+                question: newQ.trim(),
+                answer: newA.trim(),
+                example: newE?.trim()
             })
         });
 
         fetchNotes();
+    } catch (err) {
+        console.error(err);
+        alert("❌ Failed to update note");
     }
 }
 
@@ -192,6 +229,8 @@ async function updateNote(id) {
  * 6. SPEECH
  */
 function speak(text) {
+    if (!text) return;
+
     const utterance = new SpeechSynthesisUtterance(text);
     speechSynthesis.cancel();
     speechSynthesis.speak(utterance);
