@@ -87,3 +87,12 @@ textarea { height: 100px; resize: vertical; }
     background-color: #f8f9fa;
     color: #1a73e8;
 }
+
+.code-snippet textarea{
+    max-height: 200px;
+    height: 150px;
+    overflow: scroll;
+    background: #1a1c1c;
+    color: #ffffff;
+    width: 50%;
+}
