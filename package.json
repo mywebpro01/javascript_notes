@@ -2,8 +2,9 @@
   "name": "json-server-app",
   "version": "1.0.0",
   "scripts": {
-  "scripts": {
-  "start": "npx json-server --watch db.json --host 0.0.0.0 --port $PORT --no-static"
-}
+    "start": "json-server --watch db.json --host 0.0.0.0 --port $PORT"
+  },
+  "dependencies": {
+    "json-server": "^0.17.0"
   }
 }
