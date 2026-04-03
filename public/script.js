@@ -1,7 +1,8 @@
-// 🌐 API URL (IMPORTANT: no trailing slash issue)
+rewrite  ui show but db.json data not show on ui 
+
 const API = "https://lucid-presence-production-5019.up.railway.app/notes";
 
-// 📦 State
+
 let allNotes = [];
 let filteredNotes = [];
 let currentPage = 1;
@@ -12,65 +13,37 @@ let currentSpeechIndex = 0;
 let isReading = false;
 
 /**
- * 🚀 FETCH DATA (FIXED)
+ * 1. INITIAL FETCH
  */
 async function fetchNotes() {
-    const container = document.getElementById("notesContainer");
-    container.innerHTML = "<p>⏳ Loading data...</p>";
-
     try {
         const res = await fetch(API);
-
-        // 🔍 DEBUG LOG
-        console.log("API STATUS:", res.status);
-
-        if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+        if (!res.ok) throw new Error("Server error");
 
         const data = await res.json();
 
-        console.log("API DATA:", data);
-
-        // ❗ IMPORTANT FIX (json-server sometimes returns object)
-        if (!Array.isArray(data)) {
-            console.warn("Data is not array, fixing...");
-            allNotes = data.notes || [];
-        } else {
-            allNotes = data;
-        }
-
-        if (allNotes.length === 0) {
-            container.innerHTML = "⚠️ No data found in db.json";
-            return;
-        }
-
-        filteredNotes = [...allNotes].reverse();
+        allNotes = data.reverse();
+        filteredNotes = [...allNotes];
         renderUI();
-
     } catch (err) {
-        console.error("❌ FETCH ERROR:", err);
-
-        container.innerHTML = `
-            <p style="color:red;">
-                ❌ Data not loading<br>
-                👉 Check API /notes working<br>
-                👉 Open API in browser
-            </p>
-        `;
+        console.error("Database connection failed:", err);
     }
 }
 
 /**
- * 🎨 RENDER UI
+ * 2. RENDER UI
  */
 function renderUI() {
     const container = document.getElementById("notesContainer");
     container.innerHTML = "";
 
     const start = (currentPage - 1) * limit;
-    const pageData = filteredNotes.slice(start, start + limit);
+    const end = start + limit;
+    const pageData = filteredNotes.slice(start, end);
 
-    if (pageData.length === 0) {
-        container.innerHTML = "⚠️ No matching notes";
+    if (pageData.length === 0 && currentPage > 1) {
+        currentPage--;
+        renderUI();
         return;
     }
 
@@ -79,16 +52,9 @@ function renderUI() {
 
         container.innerHTML += `
             <div class="card">
-                <h3>Q${serialNumber}: ${note.question || "No question"}</h3>
-                <p><strong>A:</strong> ${note.answer || "No answer"}</p>
-
-                ${note.example ? `
-                <div class="code-editor">
-                    <textarea id="code-${note.id}" class="editor">${note.example}</textarea>
-                    <button onclick="runCode('${note.id}')">▶ Run</button>
-                    <iframe id="output-${note.id}"></iframe>
-                </div>
-                ` : ""}
+                <h3>Q${serialNumber}: ${note.question}</h3>
+                <p><strong>A:</strong> ${note.answer}</p>
+                ${note.example ? `<div class="code-snippet"><code><textarea>${note.example}</textarea></code></div>` : ''}
 
                 <div class="card-actions">
                     <button onclick="startReading(${start + index})">🔊 Read</button>
@@ -104,40 +70,31 @@ function renderUI() {
 }
 
 /**
- * ▶ RUN CODE
- */
-function runCode(id) {
-    const code = document.getElementById(`code-${id}`).value;
-    const iframe = document.getElementById(`output-${id}`);
-
-    const doc = iframe.contentDocument || iframe.contentWindow.document;
-    doc.open();
-    doc.write(code);
-    doc.close();
-}
-
-/**
- * 🔊 SPEECH
+ * 🔊 CONTINUOUS SPEECH (NEW)
  */
 function startReading(index) {
-    speechSynthesis.cancel();
+    speechSynthesis.cancel(); // stop any previous speech
+
     currentSpeechIndex = index;
     isReading = true;
+
     readNext();
 }
 
 function readNext() {
-    if (!isReading || currentSpeechIndex >= filteredNotes.length) return;
+    if (!isReading || currentSpeechIndex >= filteredNotes.length) {
+        isReading = false;
+        return;
+    }
 
     const note = filteredNotes[currentSpeechIndex];
-
     const text = `Question ${currentSpeechIndex + 1}. ${note.question}. Answer. ${note.answer}`;
 
     const utterance = new SpeechSynthesisUtterance(text);
 
     utterance.onend = () => {
         currentSpeechIndex++;
-        readNext();
+        readNext(); // 🔁 next note automatically
     };
 
     speechSynthesis.speak(utterance);
@@ -149,43 +106,129 @@ function stopReading() {
 }
 
 /**
- * 📄 PAGINATION
+ * 3. PAGINATION
  */
 function renderPagination() {
     const pg = document.getElementById("pagination");
     const pageCount = Math.ceil(filteredNotes.length / limit);
-
     pg.innerHTML = "";
 
     if (pageCount <= 1) return;
 
-    const btn = (text, disabled, cb) => {
-        const b = document.createElement("button");
-        b.innerText = text;
-        b.disabled = disabled;
-        if (!disabled) b.onclick = cb;
-        return b;
+    const createBtn = (content, isActive, isDisabled, onClick) => {
+        const btn = document.createElement("button");
+
+        btn.className = isActive
+            ? "active-btn"
+            : isDisabled
+            ? "disabled-btn"
+            : "normal-btn";
+
+        btn.innerHTML = content;
+
+        if (!isDisabled && !isActive && onClick) {
+            btn.onclick = () => {
+                onClick();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            };
+        }
+
+        return btn;
     };
 
-    pg.appendChild(btn("⬅", currentPage === 1, () => {
+    pg.appendChild(createBtn("⬅", false, currentPage === 1, () => {
         currentPage--;
         renderUI();
     }));
 
     for (let i = 1; i <= pageCount; i++) {
-        pg.appendChild(btn(i, false, () => {
+        pg.appendChild(createBtn(i, i === currentPage, false, () => {
             currentPage = i;
             renderUI();
         }));
     }
 
-    pg.appendChild(btn("➡", currentPage === pageCount, () => {
+    pg.appendChild(createBtn("➡", false, currentPage === pageCount, () => {
         currentPage++;
         renderUI();
     }));
 }
 
 /**
- * 🚀 INIT
+ * 4. SEARCH
  */
+function searchNotes() {
+    const term = document.getElementById("searchInput").value.toLowerCase();
+
+    filteredNotes = allNotes.filter(n =>
+        n.question.toLowerCase().includes(term) ||
+        n.answer.toLowerCase().includes(term)
+    );
+
+    currentPage = 1;
+    renderUI();
+}
+
+/**
+ * 5. CRUD OPERATIONS
+ */
+async function addNote() {
+    const qEl = document.getElementById("question");
+    const aEl = document.getElementById("answer");
+    const eEl = document.getElementById("example");
+
+    if (!qEl.value || !aEl.value) {
+        alert("Fill all fields");
+        return;
+    }
+
+    const newNote = {
+        question: qEl.value,
+        answer: aEl.value,
+        example: eEl.value
+    };
+
+    await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newNote)
+    });
+
+    qEl.value = "";
+    aEl.value = "";
+    eEl.value = "";
+
+    fetchNotes();
+}
+
+async function deleteNote(id) {
+    if (confirm("Delete this note?")) {
+        await fetch(`${API}/${id}`, { method: "DELETE" });
+        fetchNotes();
+    }
+}
+
+async function updateNote(id) {
+    const note = allNotes.find(n => n.id == id);
+
+    const newQ = prompt("Edit Question", note.question);
+    const newA = prompt("Edit Answer", note.answer);
+    const newE = prompt("Edit Example", note.example);
+
+    if (newQ && newA) {
+        await fetch(`${API}/${id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                question: newQ,
+                answer: newA,
+                example: newE
+            })
+        });
+
+        fetchNotes();
+    }
+}
+
+// 🚀 Start App
 fetchNotes();
