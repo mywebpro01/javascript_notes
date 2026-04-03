@@ -55,7 +55,7 @@ function renderUI() {
             <div class="card">
                 <h3>Q${serialNumber}: ${note.question}</h3>
                 <p><strong>A:</strong> ${note.answer}</p>
-                ${note.example ? `<div class="code-snippet"><code>${note.example}</code></div>` : ''}
+                ${note.example ? `<div class="code-snippet"><textarea>${note.example}</textarea></div>` : ''}
 
                 <div class="card-actions">
                     <button onclick="startReading(${start + index})">🔊 Read</button>
