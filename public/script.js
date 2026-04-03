@@ -1,4 +1,3 @@
-rewrite  ui show but db.json data not show on ui 
 
 const API = "https://lucid-presence-production-5019.up.railway.app/notes";
 
