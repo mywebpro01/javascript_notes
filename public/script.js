@@ -2,6 +2,7 @@
 const API = "https://lucid-presence-production-5019.up.railway.app/notes";
 
 
+
 let allNotes = [];
 let filteredNotes = [];
 let currentPage = 1;
@@ -26,6 +27,7 @@ async function fetchNotes() {
         renderUI();
     } catch (err) {
         console.error("Database connection failed:", err);
+        alert("Server not responding. Make sure json-server is running on localhost:3000");
     }
 }
 
@@ -53,7 +55,7 @@ function renderUI() {
             <div class="card">
                 <h3>Q${serialNumber}: ${note.question}</h3>
                 <p><strong>A:</strong> ${note.answer}</p>
-                ${note.example ? `<div class="code-snippet"><code><textarea>${note.example}</textarea></code></div>` : ''}
+                ${note.example ? `<div class="code-snippet"><code>${note.example}</code></div>` : ''}
 
                 <div class="card-actions">
                     <button onclick="startReading(${start + index})">🔊 Read</button>
